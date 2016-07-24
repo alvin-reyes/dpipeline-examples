@@ -1,0 +1,105 @@
+
+
+----------------------------------------------------------
+
+ANTLR
+http://www.antlr.org/license.html
+This product includes software developed by Terence Parr (http://www.antlr.org/)
+
+----------------------------------------------------------
+
+Dom4j
+https://github.com/dom4j/dom4j/blob/master/LICENSE
+Copyright 2001-2016 (C) MetaStuff, Ltd. and DOM4J contributors. All Rights Reserved.
+
+This product includes software developed by Filip Jirsák (https://dom4j.github.io/)
+
+----------------------------------------------------------
+
+FreeMarker
+http://freemarker.sourceforge.net/docs/app_license.html
+This product includes software developed by the Visigoth Software Society (http://www.visigoths.org/).
+
+----------------------------------------------------------
+
+iText
+http://itextpdf.com/changelog/205
+This product includes software developed by Text Software
+
+----------------------------------------------------------
+
+Jackson 
+http://wiki.fasterxml.com/JacksonLicensing
+This product includes software developed by FasterXML
+
+----------------------------------------------------------
+
+JavaMail
+https://java.net/projects/javamail/pages/Home
+This product includes software developed by Oracle Corporation
+
+----------------------------------------------------------
+
+Java Excel API
+http://jexcelapi.sourceforge.net/
+This product includes software developed by Andy Khan
+
+----------------------------------------------------------
+
+Apache log4j
+https://logging.apache.org/log4j/1.2/license.html
+Copyright 2010 The Apache Software Foundation
+
+This product includes software developed at
+The Apache Software Foundation (http://www.apache.org/).
+
+----------------------------------------------------------
+
+mongo-java-driver
+https://github.com/mongodb/mongo-java-driver/blob/master/LICENSE.txt
+This product includes software developed by MongoDB, Inc.
+
+----------------------------------------------------------
+
+Apache POI
+https://poi.apache.org/legal.html
+
+This product includes software developed at
+The Apache Software Foundation (http://www.apache.org/).
+
+----------------------------------------------------------
+
+RxJava
+https://github.com/ReactiveX/RxJava
+This product includes software developed by Netflix, Inc.
+
+----------------------------------------------------------
+
+StAX API
+http://mvnrepository.com/artifact/stax/stax-api/1.0.1
+This product includes software developed by Codehaus 
+
+----------------------------------------------------------
+
+Twitter4J 
+http://twitter4j.org/en/index.html#license
+This product includes software developed by Yusuke Yamamoto (http://twitter4j.org/)
+
+----------------------------------------------------------
+
+XMLBeans
+https://xmlbeans.apache.org/
+
+This product includes software developed at
+The Apache Software Foundation (http://www.apache.org/).
+
+----------------------------------------------------------
+
+Apache BigFunctions
+https://github.com/tareknaj/BigFunctions
+Copyright 2014 The Apache Software Foundation
+
+This product includes software developed at
+The Apache Software Foundation (http://www.apache.org/).
+
+----------------------------------------------------------

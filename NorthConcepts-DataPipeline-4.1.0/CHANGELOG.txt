@@ -1,0 +1,568 @@
+4.1 - May 7, 2016
+- added MongoDB endpoints -- MongoReader and MongoWriter 
+- added CollectionWriter to add all the values from one column/field into a Java collection (List, Set)
+- added DataEndpoint.getOpenElapsedTimeAsString()
+- added DataException.isCausedBy(Class<? extends Throwable>) and getRootCause()
+- all FieldList.add and remove methods ignore null field names
+- added Functions.addAll(Class<?>, boolean, String...) to add all static methods in a static class can now be added ass aliases in the expression language
+- the dynamic expression language now contains function aliases for all methods in java.lang.Math in addition to other new built-in functions
+- added Record.toBinary and fromBinary to serialize and deserialize from the built-in binary format
+- added TeeReader.cloneRecord to indicate if a clone/copy or the original record should be sent to the DataWriter
+- BUGFIX: CSVReader no longer throws a NullPointerException while adding properties to another valid exception that was thrown
+- CSVWriter now throws exception if a null or empty string is used as a quote char/string
+- EmailReader now allow you to specify the port
+- BUGFIX: EmailReader no longer throws exceptions when retrieveing null email addresses
+- EventBus.addEventBusLifecycleListener() no longer requires an EventFilter
+- rename EventBusReader.stopOnReaderEOF to stopOnWriterEOF
+- EventBus can now remove listeners by topic
+- added FileWriter.autoCloseWriter
+- added FilteringReader.getDiscardReasonFieldName()
+- the expression language now behaves like databases and returns null when adding or subtracting null from a number
+- the expression language now handles methods with variable length arguments
+- BUGFIX: JMX monitoring now returns a value for the endpoints.elapsedTimeAsString property
+- added JdbcUpsertWriter.nonUpdateFields to indicate fields which should only be written once and not updated during an upsert
+- added static convenience methods Job.run(reader, writer) and Job.runAsync(reader, writer)
+- several Job methods, like pause(), resume(), and cancel(), now return the "this" instance for fluent API usage
+- added SimpleJsonReader to mirror SimpleJsonWriter
+- added SimpleXmlReader to mirror SimpleXmlWriter
+- added XmlWriter.pretty to indicate if line breaks and indentations should be added to output (default is false)
+- added CachedLookup.maxEntries to limit the number of elements cached and CachedLookup.resetSchedule to indicate when the cache should be completely cleared
+- added CachedLookup.getEntries(), getHits(), getMisses(), and getRequests()
+- BIGFIX:RenameField no longer throws exception when old and new fields are the same or have different cases
+- added TransformingWriter to mirror TransformingReader -- all Transformer classes can now be used with TransformingWriter
+- added Transformer.geEndpoint() and getWriter() to enable usage in reading and writing scenarios
+- The binary FileWriter now supports appending to an existing file via a new overloaded constructor
+- added CollectionWriter to receive all values from specific fields
+- BIGFIX: AsyncWriter no longer hangs when an exception occurs while it's already blocking
+- lookup classes (BasicLookup, CachedLookup, & DataReaderLookup) no longer display individual entries in their toString() methods, only their count
+
+4.0 - Mar 17, 2016
+- added DataEndpoint.getLastRecord() to return the most recent record seen by this endpoint while it is open
+- added DataEndpoint.enableJmx() to turn on JMX (Java Management Extensions) monitoring & management and exposes running Jobs and EventBuses as managed beans
+- added DataEndpoint.getElapsedTimeAsString() to return a human readable string of the total time this endpoint spent reading or writing
+- added DataException.isCauseInterruptedException() to indicate if a thread was interrupted
+- added DataReader.isExhausted() to indicate that this stream has already returned a null and no further reads are possible
+- DataReader.read() now guarantees that no further calls to the underlying DataReader.readImpl() will occur once it returns a null
+- added Messages.getCurrent(boolean) to allow for conditional thread-local instance creation
+- added Messages.clearCurrent() to allow thread-local instances to be explicitly removed
+- java.io.InputStream and java.io.Reader values are now converted to byte[] and String when added to records
+- CSVReader now uses strings (instead of a single char) for fieldSeparator and quote
+- CSVReader now allows for different starting and ending quote strings
+- CSVReader now supports configurable line (or record) separators using its new setLineSeparators(String...) and setLineSeparator(String) methods
+- added com.northconcepts.datapipeline.email.EmailReader to read emails (and their attachments) from IMAP mailboxes
+- added com.northconcepts.datapipeline.eventbus.EventBus, EventBusReader, and EventBusWriter to allow pipelines to be loosely coupled and used in one-to-many (publish-subscribe) scenarios
+- FilteringReader now accepts an optional discardDataWriter and discardReasonFieldName to easily capture or route filtered out records
+- ValidatingReader now accepts an optional discardDataWriter and discardReasonFieldName to easily capture or route records failing validation
+- CreateWindowStrategy and CloseWindowStrategy noe include additional info in their API to help make the sliding window open/close decision
+- added CreateWindowStrategy.recordPeriod(int) to opens new sliding windows at set record counts
+- added more convenience methods to GroupByReader
+- added new Job class to run, manage, and track pipelines -- replaces JobTemplate.DEFAULT.transfer(reader, writer);
+- the exsiting JobTemplate transfer methods now return Job, but otherwise behave the same
+- SimpleJsonWriter and SimpleXmlWriter now have setPretty(boolean) and isPretty() methods to indicate if line breaks and indentations should be added to output (default is false)
+- added DeMux.runAsync() to mirror the new Job class
+- added more BigDecimal and BigInteger operations to BasicFieldTransformer
+- deprecated the TransformingReader.filter property in favour of the new name TransformingReader.condition to carify the conditional transformation intent
+
+3.1.4.2 - Jan 29, 2016
+- added Messages.setEnabled() and isEnabled() to control whether silent failures in TransformingReader and ValidatingReader are stored in Messages
+- added TransformingReader.onFailure to explicitly intercept transformation failures
+
+3.1.4 - Jan 19, 2016
+- BUGFIX: AsyncWriter now throws an exception in the next call to writeImpl(Record record) if the asynchronous writer thread failed
+- added DataEndpoint.DEFAULT_READ_BUFFER_SIZE for use in AsyncMultiReader and other classes
+- DebugReader now emits the current record count along with each record
+- The following writers now supports appending to an existing file via a new overloaded constructor: TextWriter, LinedTextWriter, CSVWriter, FixedWidthWriter
+- renamed Node.isValue() to Node.isValueNode()
+- added TextWriter.autoCloseWriter to indicate if the underlying java.io.BufferedWriter should be closed when this stream closes (defaults to true).
+- added TextWriter.flushOnWrite to indicate if the underlying java.io.BufferedWriter should be flushed after each record is written (defaults to false).
+- CSVWriter now supports different starting and ending quote string via setStartingQuote() and setEndingQuote()
+  - the existing setQuoteChar() method assigns both startingQuote and endingQuote to the same value
+  - the existing getQuoteChar() method returns the startingQuote value
+  - updated CSVWriter.quoteChar from char to String
+- added CSVWriter.forceQuote to indicate if all values should be quoted, even if they are not null or empty strings.
+- updated CSVWriter.fieldSeparator from char to String
+- added CSVWriter.nullValuePolicy to handle how null values are written (defaults to ValuePolicy.EMPTY_STRING, an unquoted blank value)
+- added CSVWriter.emptyStringValuePolicy to handle how empty string values are written (defaults to ValuePolicy.QUOTED_EMPTY_STRING, a quoted blank value)
+- updated the JavaDocs to clarify that ExcelDocument is not thread safe, but can be reread very quickly since it uses an in-memory buffer
+- the Excel providers (PoiProvider, PoiXssfProvider, and JxlProvider) now guard against reusing an ExcelDocument while it is still open 
+- added FileWriter.flushOnWrite to indicate if the underlying java.io.BufferedWriter should be flushed after each record is written (defaults to false).
+- added several convenience methods to GroupByReader that uses the source field name for the target: sum, first, last, max, min
+- added isBatchSupported() to IUpsert and GenericUpsert
+- MySQl upserts (INSERT ... ON DUPLICATE KEY UPDATE) are now supported using the new com.northconcepts.datapipeline.jdbc.upsert.MySqlUpsert
+  - for use with JdbcUpsertWriter
+- added setCommitBatch() to JdbcWriter and JdbcUpsertWriter to indicate if a commit should occur after each batch is sent to the database
+- added JobCallback.NULL for use by implementers of JobTemplate
+- BUGFIX: the default implementation of JobTemplate.transfer() now calls JobCallback.onFailure() if the transfer was successful, but the reader or writer failed to close
+- the following DeMux methods are now public: getStrategy(), getSource(), getSink(), getThread()
+- onLimitExceeded() in IApiLimitPolicy and ApiLimitPolicy now accepts TwitterRateLimit instead of TwitterReader
+- expandEntities() in IEntityExpansionPolicy and EntityExpansionPolicy now accepts ITwitterConverter instead of TwitterReader
+- added the following new Twitter classes to com.northconcepts.datapipeline.twitter: 
+  - ITwitterConverter, TwitterConverter
+  - TwitterFilterStreamReader, TwitterSampleStreamReader
+  - TwitterFollowerIDsReader, TwitterFollowerListReader, TwitterFollowingIDsReader, TwitterFollowingListReader
+  - TwitterFollowWriter, TwitterUnfollowWriter
+  - TwitterProvider, TwitterStreamProvider
+  - TwitterRateLimit
+- updated TwitterReader, TwitterSearchReader, and TwitterStreamReader to delegate work to TwitterProvider, ITwitterConverter, and TwitterRateLimit
+- added isAddTextToParent() and setAddTextToParent() to XmlReader, JsonReader, and JavaBeanReader to indicate if each child node's text should be concatenated to its parent during parsing (defaults to false).
+- added TeeReader to operate like tee in Unix and write every record passing through it to a DataWriter
+- improved various error message text
+
+
+3.1.3 - Jul 24, 2015
+- transformations can now be applied to hierarchical records.  Field names passed to operators are represented internally as FieldPaths allowing them to reference fields in child records and arrays.  For example, the field path "customer.address[0].city" can be created in two ways [FieldPath.parse("customer.address[0].city") or new FieldPath().name("customer").name("address").index(0).name("city")] before being passed to the Record.getField() or Record.getValue() methods.
+- addedd ArrayValue.addAll(ArrayValue array), indexOfNode(Node child), indexOfValue(Object value)
+- BUGFIX: Field.compareTo() now prevents ClassCastException by first comparing the field value's node type and value type before comparing the actual value
+- BUGFIX: Field now overrides getParentRecord() to return its record (same as Field.getRecord()) instead of its grandparent record
+- FieldComparator can now compare nested/child fields.  It's internal fieldName property has been repalced with a FieldPath object.
+- FieldList now treats field names as FieldPath internally which can be accessed via FieldList.getFieldPath(int)
+- added FieldPath to represent an abstract location of a field within a record
+- added Node.isValue() to identify value containers (Record, ArrayValue, and SingleValue instances)
+- added Node.DuplicateNodeAction to indicate how duplicate fields should be handled during copy/merge/lookup operations
+- updated ProxyReader and ProxyWriter to ensure offending records are added to any exceptions that are thrown by subclasses.
+- added Record.copyFrom(Record, DuplicateNodeAction) to handle merging of hierachical records
+- updated Record.getField(int) add the size of the list to negative values to obtain values from the end of the list
+- added new Record.getField(), getValue(), contains(), containsField(), removeField(), moveFieldBefore(), moveFieldAfter(), excludeFields(), and removeFields() methods accepting FieldPath
+- updated Record.fromJson() and fromXml() to automatically typecast to the left side variable by returning <T extends ValueNode<?>> instead of ValueNode<?>
+- updated the following classes to handle hierarchical fields
+  - RemoveDuplicatesReader
+  - FieldFilter
+  - GroupByReader
+  - GroupOperation
+  - BasicLookup
+  - DataReaderLookup
+  - LookupTransformer
+  - BasicFieldTransformer
+  - CopyField
+  - FieldTransformer
+  - MoveFieldAfter
+  - MoveFieldBefore
+  - RemoveFields
+  - RenameField
+  - SetCalculatedField
+  - SetField
+  - SplitArrayField
+- added FieldExists and FieldNotExists filters
+- AggregateReader is now deprecated, use GroupByReader instead. GroupByReader provides the same functionality and can return continuous results
+- BUGFIX: GroupByReader now fails on open if no group-by fields are specified
+- added GroupOperation.getSourceFieldPath() and getTargetFieldPath()
+- added new LookupTransformer(FieldList, Lookup, DuplicateNodeAction) constructor and deprecated LookupTransformer.LookupTransformer(FieldList, Lookup, boolean) constructor
+- added new XmlField(String, String, String) constructor and cascadeResetLocationPath Java bean property to XmlField
+- added overloaded addField(String, String, String) to identify when cascaded values (values repeated when new matches aren't found) should be cleared to XmlReader, JsonReader, and JavaBeanReader
+
+
+3.1.2 - Jul 9, 2015
+- The dynamic expression lanuage (DPEL) now automatically handles BigDecimal and BigInteger operations.  For example, if either operand in the expression "A + B" are BigXXX, then both operands will be promoted to BigXXX before applying the operator.
+- Added convenience methods for converting records to and from XML
+  - static Record.toXml(ValueNode<?> recordOrArray)
+  - static Record.toXml(ValueNode<?> recordOrArray, Writer writer)
+  - static Record.fromXml(String xml) 
+  - static Record.fromXml(Reader reader)
+  - Record.toXml()
+- AsyncMultiReader.getException() now always returns the first exception, even when AsyncMultiReader.failOnException is set to false
+- BUGFIX: ExcelWriter was limiting number of autofilter columns in subsequent sheets to number of columns in first sheet
+- BUGFIX: Record.toJson() was throwing NullPointerException for uninitialized field value (i.e. fields not explicitly set to null)
+- BUGFIX: BasicFieldTransformer was throwing NullPointerException for uninitialized field value (i.e. fields not explicitly set to null)
+
+
+3.1.1 - Jun 30, 2015
+- Addded AsyncMultiReader.getException() to retrieve exceptions when the failOnException flag is set to false
+- updated AsyncMultiReader's buffer and threads fields to protected from private
+- Addded AsyncMultiReader.ReaderThread.getReader()
+- BUGFIX: ArrayValue now distinguishes between Iterable and ValueNodes that implements Iterable (like Record and ArrayValue)
+- BUGFIX: Field.getSizeInBytes() now handles nested records and multidimensional arrays
+- API change: FieldType.getSizeInBytes(Object value) is now FieldType.getSizeInBytes(ValueNode<?> valueNode).  This change is part of the support for nested records and multidimensional arrays.
+- Added ability to visit all nodes in a record, array, or field via com.northconcepts.datapipeline.core.NodeVisitor.visit(Node, INodeVisitor)
+- API change: com.northconcepts.datapipeline.core.Node.NodeType.ARRAY_VALUE renamed to ARRAY
+- Added ExcelDocument.getSheetNames()
+- Added ExcelWriter.isAutofilterColumns() and setAutoFilterColumns(boolean)
+- BasicFieldTransformer now supports nested records and multidimensional array values
+- Added BasicFieldTransformer.isContinueOnException(), setContinueOnException(boolean), and getException() to allow field transformation chains to continue subsequent seps even when failures occur
+- Added BasicFieldTransformer.SingleValueOperation to support automatic array and record traversal for single valued objects
+- API change: BasicFieldTransformer.StringOperation now extends SingleValueOperation instead of Operation
+- API change: removed BasicFieldTransformer.NullableStringOperation.  Usage now replaced with existing BasicFieldTransformer.StringOperation
+
+
+3.1.0 - Jun 19, 2015
+- Added native support for nested records and multi-dimensional arrays in the API and dynamic expression lanuage (think JSON on steroids)
+  - Added the following new supporting classes:
+    - com.northconcepts.datapipeline.core.Node
+    - com.northconcepts.datapipeline.core.ValueNode
+    - com.northconcepts.datapipeline.core.ArrayValue
+    - com.northconcepts.datapipeline.core.SingleValue
+  - The following methods now have built-in handling for Record, Collection, Iterable, Node subclasses, and arrays (primitive and object)
+    - Record.addField(...)
+    - Record.setField(...)
+    - Field.addValue(...)
+    - Field.setValue(...)
+    - ArrayValue.addValue(...)
+    - ArrayValue.setValue(...)
+  - Record now extends ValueNode and implements methods from super classes
+  - Record add the following methods for working with nested/descendent fields:
+    - getField(FieldList fieldNamePath, boolean createField)
+    - containsField(FieldList fieldNamePath)
+    - removeField(FieldList fieldNamePath)
+  - Record now includes an overloaded method to distinguish between adding/ensuring a unique field name and adding to an array: addField(String fieldName, Object value, boolean arrayField)
+  - Added convenience methods for converting records to and from JSON
+    - static Record.toJson(ValueNode<?> recordOrArray)
+    - static Record.toJson(ValueNode<?> recordOrArray, Writer writer)
+    - static Record.fromJson(String json) 
+    - static Record.fromJson(Reader reader)
+    - Record.toJson()
+  - Field now extends Node and implements methods from super classes
+  - Added the following methods to Field
+    - isNotArray()
+    - forceValueAsArray()
+    - getValueAsArray()
+    - getValueAsArray(boolean force)
+    - getValueAsRecord()
+    - getValueAsSingleValue()
+  - Updated FileReader and FileWriter to support sub records and multi-dimensional arrays
+- Added Record.evaluate(String expressionString) to allow dynamic expressions to be evaluated using a specific record
+- Several classes now implement Iterable to be used in "foreach" statement: Record, RecordList, FieldList, ArrayValue
+- Added Field.remove() to remove this field from its parent Record
+- Added com.northconcepts.datapipeline.core.AsyncMultiReader to read from one or more DataReaders concurrently, in separate threads
+- Added CompositeValue.isNull()
+- Updated DataException to use the class name of its nested exception as the message if the message is null
+- Added RECORD to FieldType enum
+- Updated FieldType.getSizeInBytes(Object value) to return long instead of int
+- RecordList is now Serializable
+- Added Session.keySet(), containsSessionProperty(...), getSessionProperty(...), setSessionProperty(...);
+- BUGFIX: ExcelWriter.close() no longer throws NullPointerException when autofitColumns is true and no data was written
+- Added GroupByReader.setExcludeNulls(boolean excludeNulls) to indicate if results for null groups should be skipped
+- Updated GroupByReader to handle arrays in grouping fields.  For example, each country in the country field is treated as a separate value if grouping on it.
+- Added TemplateWriter.setAlwaysShowFooter(boolean alwaysShowFooter) and setAlwaysShowHeader(boolean alwaysShowHeader) to indicates if header and footer should be written when no records were written (defaults to true)
+- Updated string operators in BasicFieldTransformer to handle arrays
+
+
+3.0.5 - May 29, 2015
+- Added ExcelWriter.setStyleFormat to allow user-defined column formatting
+- ExcelWriter.setAutofitColumns() now uses the POI providers (ExcelDocument.ProviderType.POI and ExcelDocument.ProviderType.POI_XSSF) native autoSizeColumn function
+
+
+3.0.4 - May 27, 2015
+- BUGFIX: AsyncReader now guards against hanging the main thread when exceptions occur
+
+
+3.0.3 - May 5, 2015
+- using latest license agreement (v1.81) - no functional changes
+
+
+3.0.2 - May 2, 2015
+- using latest license agreement (v1.8) - no functional changes
+
+
+3.0.1 - May 1, 2015
+- using latest trial library - no functional changes
+
+
+3.0.0 - Apr 30, 2015
+- Improved performance of XPath-based readers (JsonReader, XmlReader, and JavaBeanReader)
+- Added DataEndpoint.getElapsedTime(), isCaptureElapsedTime(), and setCaptureElapsedTime(boolean captureElapsedTime)
+- Added DataEndpoint.getOpenedOn() and getClosedOn() to return system time in milliseconds when readers and writers were opened and closed
+- Added DataEndpoint.getOpenElapsedTime returns the number of milliseconds this endpoint was (or has been) opened for
+- Added DataEndpoint.assertClosed() for operations that need to ensure the endpoint has finished reading
+- Exceptions now include timestamps for when endpoints were opened and closed if relevant
+- Added Field.getValueAsBigDecimal(), getValueAsBigInteger(), setValue(BigDecimal value), and setValue(BigInteger value)
+- Updated Field.toString() and getValueAsString() to strips insignificant zeros after decimals in BigDecimal values
+- Added Record.getCreatedOn() to return the time in milliseconds when the record was created
+- BUGFIX: fixed ClassCastException in Record.copySessionPropertiesFrom(Session)
+- BUGFIX: CSVWriter now quotes values starting with zero (0) to prevent other apps from trimming numbers with zeros
+- Added com.northconcepts.datapipeline.filter.rule.DateIsBefore, DateIsAfter, and DateIs
+- Added FieldFilter.isThrowExceptionOnMissingField() and setThrowExceptionOnMissingField(boolean)
+- Added convenience methods to FieldFilter
+- Added com.northconcepts.datapipeline.transform.BasicFieldTransformer.replaceAll() and replaceFirst()
+- updated GroupAverage and GroupSum to hold their running total and return value as BigDecimal
+- updated GroupFirst to allow null first elements
+- BUGFIX: GroupMaximum and GroupMinimum no longer throw ClassCastException when comparing different types of numbers (i.e. Double vs Long, BigDecimal vs short, etc.)
+- BUGFIX: GroupMaximum and GroupMinimum no longer throw ClassCastException when comparing Strings with different types (i.e. String vs Long).  Both values are treated as Strings
+- GroupByReader now provides sliding window aggregations via its new setNewWindowStrategy(NewWindowStrategy) and setCloseWindowStrategy(CloseWindowStrategy) methods
+- Added convenience methods to GroupByReader
+- Renamed GroupField to GroupOperationField
+- Added GroupOperation.getFilter(), setFilter(Filter filter), getExcludeNulls(), setExcludeNulls(boolean excludeNulls), getTargetFieldName(), and setTargetFieldName(String targetFieldName)
+- Updated JobTemplateImpl to log original and secondary exceptions as errors; original behaviour is not affected
+- Updated SimpleJsonWriter to write date, time, and datetime fields using the following patterns respectively: "yyyy-MM-dd", "HH:mm:ss.SSS", "yyyy-MM-dd'T'HH:mm:ss.SSS"
+- BUGFIX: SimpleJsonWriter now writes well-formed JSON, even when an exception occurs.
+- Added TailProxyReader to keep the last n records in-memory for asynchronous retrievel as data is flows through
+- Added TailWriter to keep the last n records written to it in-memory for asynchronous retrievel
+- Added BasicFieldTransformer.intervalToXXX convenience methods
+- BUGFIX: XmlReader now matches unclosed nodes early on record break if they are used in the current record
+- Updated DateEndpoint.toString() to include record count, opened time, closed time, and description if available
+- DataEndpoint.VENDOR, PRODUCT, and PRODUCT_VERSION are now public
+- BUGFIX: TransformingReader now skips subsequent transformers if records gets marked as deleted
+- Added SplitArrayField transformer
+- Added convenience methods SortingReader.asc(String fieldName) and desc(String fieldName)
+
+
+
+2.3.6.6 - Feb 17, 2015
+- Field is now Serializable
+- Record is now Serializable
+- BUGFIX: PipedReader.available() now adds it's queued element count to its buffer count 
+- Added Contains field filter rule
+- Added FieldFilter.addNotRule(FieldFilterRule rule)
+- DeMux now implements Runnable
+- DeMux.getSource() and getSink() promoted from private to protected
+- Added DeMux.run(boolean async) to conditionally run the feeder process in the current thread (false) or a new thread (true)
+- Added DeMux.join(long millis), join(long millis, int nanos), and join()
+- Added DataReaderClient
+- Added DataReaderServer
+
+
+2.3.6.4 - Dec 24, 2014
+- BUGFIX: AsyncReader now stops filling its cache immediately when stop is called
+- Field now supports array types
+- Added LimitReader to cap the number of records read from another DataReader
+- Added Record.addField(String, Object)
+- Added GroupByReader to provide whole stream aggregations as records
+- Updated JavaBeanReader to extend XmlReader instead of ProxyReader; API remains unchanged
+- Updated JsonReader to extend XmlReader instead of ProxyReader; API remains unchanged
+- BUGFIX: DeMux now removes closed readers from its list of targets
+- BUGFIX: DeMuxReader now clears their queue on close to prevent possible blocking in parent DeMux
+- Added DeMux.getThread(), isFinished(), and stop()
+- Replaced ExcludeFields with RemoveFields; ExcludeFields is now depracated and extends RemoveFields
+- Replaced IncludeFields with SelectFields; IncludeFields is now depracated and extends SelectFields
+- Improved logging and rate limit handling in TwitterSearchReader
+- Added getDuplicateFieldPolicy() and setDuplicateFieldPolicy(DuplicateFieldPolicy) to XmlReader, JsonReader, JavaBeanReader
+
+
+2.3.5 - Oct 6, 2014
+- new license agreement v1.4
+
+
+2.3.4 - Sep 9, 2014
+- added com.northconcepts.datapipeline.twitter.TwitterSearchReader
+- updated license to refelct new plans + clarified revocation terms
+- replaced "\n" with OS line separator in DataException.getPropertiesAsString() and getMessageWithProperties()
+- Field.getValueAsString() now returns the first and last bytes for BLOBS instead of the array's default toString()
+- Record.clone now returns Record instead of Object
+- added Record.moveFieldBefore(String fieldName, String beforeFieldName) and moveFieldAfter(String columnName, String afterFieldName)
+- added RecordList.addAll(DataReader reader)
+- added RecordList.RecordList(DataReader reader) constructor
+- added CSVReader.getLineText() and getLineParser()
+- added filter rule: com.northconcepts.datapipeline.filter.rule.IsNull
+- AggregateReader.add(AggregateOperation ... operations) is now public
+- inner class AggregateReader.AggregateOperation is now public
+- BUGFIX: XPath engine now matches root and ancestor attributes
+- JavaBeanReader now returns node/field names separate from values; use "//firstName/text()" instead of "//firstName" for values
+- added JavaBeanReader.setDebug(boolean debug) and isDebug() to display all potential paths seen by the reader
+- added JsonReader.setDebug(boolean debug) and isDebug() to display all potential paths seen by the reader
+- added XmlReader.setDebug(boolean debug) and isDebug() to display all potential paths seen by the reader
+- BUGFIX: JobTemplateImpl no longer tries to reopen supplied endpoints if they are already open
+- BUGFIX: DataReaderLookup no longer tries to reopen supplied endpoints if they are already open
+- BUGFIX: DeMux now prevents sinks/readers from blocking forever if open fails
+- added BasicFieldTransformer.dateTimeToDate() and dateTimeToTime() to split out just the date or time from a datetime field
+- added FieldTransformer.setValueOnException(Object valueOnException), getValueOnException(), and hasValueOnException() to set a default value when an exception occurs instead of rethrowing it
+- added com.northconcepts.datapipeline.transform.MoveFieldBefore and MoveFieldAfter transformations
+- added examples from blogs: com.northconcepts.datapipeline.examples.cookbook.blog.*
+
+
+2.3.3.1 - Apr 18, 2014
+- BUGFIX: DataException.getRecord() no longer throws ClassCastException
+
+
+2.3.3 - Oct 2, 2013
+- Added XmlReader.setExpandDuplicateFields(boolean) to return multiple records instead of overwriting repeating fields
+
+
+2.3.2.1 - Sep 30, 2013
+- Increased records in Free version 
+
+
+2.3.2 - Sep 24, 2013
+- added Record.selectFields(FieldList, boolean) and IncludeFields.lenient to continue even if fields don't exist
+- SetCalculatedField & SetField now have overwrite flags to prevent changing existing values
+
+
+2.3.1 - Sep 13, 2013
+- Added generic JDBC upsert writer: JdbcUpsertWriter
+- Added PipedReader and PipedWriter to allow the push model of piping a writer to a reader
+- Added convenience Record.setField(String fieldName, Object value) and Record.setFieldNull(String fieldName, FieldType type) methods.
+- JsonReader XPath matching and exception reporting improvements
+- Early access to SQL builder classes
+
+
+2.3 - Aug 2, 2013
+- added streaming JSON reading and writing (simple and template based)
+- added SimpleXmlWriter
+- improved handling of recursive XML-to-records 
+- added user-definable demux strategies
+- DeMuxReader is no longer a public class since it should not be referenced directly
+- improved exception handling in JdbcReader
+- BUGFIX: JavaBeanReader now handles xpath for recursive text children
+- updated Apache POI to v3.9
+
+
+2.2.9.3 - July 8, 2013
+- updated licenses (change to number of developers and applications in each tier)
+- IncludeFields & ExcludeFields now accept a collection of field names in their constructor and add method
+
+
+2.2.9.2 - June 7, 2013
+- updated distributed Eclipse project to include new Data Pipeline jar
+
+
+2.2.9.1 - May 13, 2013
+- added JdbcReader.useColumnLabel property to allow fields to be named using the column labels (or aliases) instead of the underlying, real column names
+
+
+2.2.9 - May 6, 2013
+- added Excel 2007 provider (POI_XSSF)
+- Excel handling now defaults to the Apache POI_XSSF (Excel 2007) provider, instead of POI (Excel 2003)
+- added FixedWidthField.align to allow left-filled (right aligned) fields
+- added FixedWidthField.fillChar to allow fields to specify a different filler from their reader/writer
+- reduced memory overhead for fields and records
+- CSV performance improvements
+- exception property values now truncated to 256 chars
+- using StringBuilder (instead of StringBuffer) internally to improve performance
+
+
+2.2.8 - Nov 28, 2012
+- added TemplateWriter for writing text streams using FreeMarker templates
+- added new examples for writing XML and HTML files using TemplateWriter
+- BUGFIX: XmlWriter's (XmlTemplate, File) constructor now calls setFieldNamesInFirstRow(false) by default
+- BUGFIX: The JxlProvider now converts intervals and user-defined types to string when generating Excel files
+- Intervals are no longer converted to strings when added to a field/record
+- BasicFieldTransformer can now convert numbers to intervals (seconds, months, days, minutes, etc.)
+- JdbcWriter now has public accessors for connection, tableName, batchMode, and jdbcTypes
+- individual fields can now be removed from a FieldList
+- FieldList can now accept collections of strings
+- updated Apache POI to v3.8
+
+
+2.2.7 - July 14, 2012
+- added JdbcMultiWriter for multi-threaded writing to 1 or more database connections
+- added multi-threaded AsyncWriter to compliment AsyncReader
+- data writers now have an available() method to indicate the number of records that can probably be written without blocking
+- MultiWriter now supports configurable write strategies (ReplicateWriteStrategy, RoundRobinWriteStrategy, AvailableCapacityWriteStrategy, and user defined)
+- added support for CLOB fields (see JdbcValueReader.DEFAULT)
+- Field and Record's toString() methods now limit displayed strings to the first 128 characters
+- RecordMeter is now public and returned by MeteredReader and MeteredWriter's getMeter() method
+- BUGFIX: record count is no longer off by 1 in some cases 
+
+
+2.2.6.1 - May 3, 2012
+- BUGFIX: POI provider now handles null rows in Excel file
+- BUGFIX: Excel reader exception logging no longer fails when a record has no fields
+
+
+2.2.6 - April 22, 2012
+- performance improvements in CSV and fixed width handling
+- untyped expression evaluation is now based on the value's type, instead of the field's declared type
+- BUGFIX: now handles untyped expressions between primitive and object values
+- float expressions are now upgraded to doubles during evaluation
+- all non doubles and floats numbers are now upgraded to longs during evaluation
+- expressions can now reference Java beans, not just primitive values
+- method call expression now finds the most appropriate method based on the runtime argument types (http://en.wikipedia.org/wiki/Multiple_dispatch)
+- improved handling for collections and arrays in DataException properties
+- Apache PoiProvider can now distinguish between date, time, and datetimes fields in Excel 
+
+
+2.2.5 - Jan 8, 2012
+- added JavaBeanReader whice uses XPath expressions to identify field values and break records
+- AbstractReader's setStartingRow and setLastRow no return this
+- Filter rule IsInstanceOfJavaType now returns false for null values
+- added number-to-date methods to BasicFieldTransformer (numberToDate(), minutesToDate(), hoursToDate(), and daysToDate())
+- BasicFieldTransformer.Operation and BasicFieldTransformer.StringOperation are now public classes
+- BasicFieldTransformer.add(Operation ... operation) is now public
+- ConditionalTransformer is now private (use TransformingReader.filter instead)
+- TransformingReader now contains an optional Filter, allowing any transformer to be conditionally applied
+- Removed TransformingReader.add(Filter filter, Transformer ... transformer) method
+
+
+2.2.4 - May 31, 2011
+- POI provider for ExcelWriter now caches cell styles.  This fixes the "Too many different cell formats" Excel message when opening a spreadsheet with more than 4000 styles
+
+
+2.2.3 - May 14, 2011
+- added JdbcValueReader to allow clients to override column reading strategy
+- JdbcReader.valueReader property
+
+
+2.2.2 - May 11, 2011
+- added XmlTemplate
+- XmlWriter now uses XmlTemplate to describe output pattern
+
+
+2.2.1 - December 9, 2010
+- added batch execution to JdbcWriter (see JdbcWriter.setBatchSize)
+- added callback mechanism to track job progress (see JobTemplate.transfer(R reader, W writer, boolean async, JobCallback<R, W> callback))
+- early access to DeMuxReader
+
+
+2.2.0 - September 9, 2010
+- Added XPath-based XmlReader
+- Excel now defaults to the Apache POI instead of JXL
+- The following classes now use java.util.List instead of java.util.ArrayList in their public APIs: CompositeValue, FieldList, Lookup, LookupTransformer, Record, RecordList
+
+
+2.1.0 - August 26, 2010
+- Added support for Excel 2003 XLS files
+- Added support for Excel XLSX (XML format) files
+- BUGFIX: whitespace (like tab) can now be used as the field separator in CSVReader
+- Added FixedWidthReader.setLastFieldConsumesRemaining(boolean lastFieldConsumesRemaining)   
+- Added ExcelReader.setUseSheetColumnCount(boolean useSheetColumnCount)
+- BUGFIX: handle null variable names in expressions
+- Added more string utils to BasicFieldTransformer
+- Added ConditionalTransformer class
+- Added TransformingReader.add(Filter filter, Transformer ... transformer)
+- SetField now has type-specific constructors
+- Added Eclipse project files
+- Added Ant build project
+
+
+2.0.2 - Jan 18, 2009
+- RecordList now has a varargs constructor
+- BUGFIX: Lookup now has a get(Arraylist) method; was previously passing Arraylist to get(Object...)
+- BUGFIX: XmlWriter no longer treats the field names as the first record
+- Examples now include input files
+
+
+2.0.1 - Jan 9, 2009
+- BUGFIX: ValueMatch.add(Object ... values) now adds individual elements of values
+- ValueMatch is now a parameterized type
+- OrRule, PatternMatch now use varargs
+
+	
+2.0.0 - Oct 26, 2008
+- Java 5 support (var-args, generics, enums)
+- Dual licensing:  GPL and commercial
+- Added CSVReader.trimFields property (default is true)
+- Added workaround for the JXL (Excel provider) timezone issue
+
+
+1.2.3
+- Added ASTNode, ExpressionHelper, and ParseException to the public API
+- Expression now extends ASTNode
+- Added RtfWriter
+- Added PdfWriter
+- Added XmlWriter
+- Added CombinedLogReader
+- Added BinaryWriter
+- added SequenceReader 
+
+
+1.2.2
+- RecordComparator now compares all fields when none are specified
+- LookupTransformer now handles "no results" and "too many results" through overridable methods
+- Added session properties to record and field
+- Renamed ProxyWriter.setTargetDataSink to setNestedDataWriter
+- Renamed ProxyReader.setTargetDataReader to setNestedDataReader
+- ParsingReader now accepts a file parameter
+- Interval now implements Comparable
+- Moment now implements Comparable and accepts a Date
+- FixedWithdWriter now extends LinedTextWriter (instead of TextWriter)
+- CSVWriter now extends LinedTextWriter (instead of TextWriter)
+- Added FieldFilterRule.toString()
+
+
+1.2.1
+- Added fixed width reader & writer
+
+
+1.2.0
+- JdbcReader & JdbcWriter shows current record on exception
+- AbstractWriter now shows current record (instead of null) on exception
+- ProxyReader respects the Record.isDeleted() flag when testing for record removal from ProxyReader.interceptRecord
+- DataReader.read() now checks for records pushed into the buffer just before EOF
+

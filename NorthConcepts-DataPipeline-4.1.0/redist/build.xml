@@ -1,0 +1,144 @@
+<project name="DataPipeline" default="package" basedir="..">
+
+    <target name="init">
+        <property name="name"                   value="${ant.project.name}"/>
+        <property name="title"                  value="Data Pipeline"/>
+        <property name="version"                value="4.1.0"/>
+        <property name="baseArchiveName"        value="NorthConcepts-DataPipeline"/>
+        <property name="javaSourceDir"          value="src"/>
+        <property name="javaExampleSourceDir"   value="example/src"/>
+        <property name="exampleDataDir"			value="example/data"/>
+        <property name="classDir"               value="build/classes" />
+        <property name="docsDir"                value="docs" />
+        <property name="javaDocsDir"            value="${docsDir}/javadocs" />
+        <property name="deployDir"              value="dist" />
+
+        <patternset id="sourcePattern">
+            <include name="com/northconcepts/datapipeline/**/*.java"/>
+        </patternset >
+
+        <patternset id="examplesSourcePattern">
+            <include name="com/northconcepts/datapipeline/**/*.java"/>
+        </patternset >
+
+        <path id="classpath">
+          <fileset dir="lib">
+            <include name="**/*.jar"/>
+          </fileset>
+        </path>
+
+        <tstamp>
+           <format property="timestamp" pattern="yyyy.MM.dd-HH.mm.ss" />
+           <format property="year" pattern="yyyy" />
+        </tstamp>
+
+        <echo message="Build started: ${timestamp}" />
+    </target>
+
+
+    <target name="clean" depends="init">
+        <delete includeEmptyDirs="true" verbose="true">
+             <fileset dir="." includes="${classDir}/**/*"/>
+             <fileset dir="." includes="${deployDir}/${baseArchiveName}*.jar"/>
+             <fileset dir="." includes="${deployDir}/${baseArchiveName}*.zip"/>
+             <fileset dir="." includes="${javaDocsDir}/**/*"/>
+        </delete>
+    </target>
+
+    <target name="prepare" depends="clean">
+        <mkdir dir="${classDir}" />
+    </target>
+
+    <target name="compile" depends="prepare">
+        <javac srcdir="${javaSourceDir}" 
+               destdir="${classDir}" 
+               source="1.6"
+               target="1.6"
+               optimize="false"
+               debug="true"
+               debuglevel="lines,vars,source"
+        >
+            <patternset refid="sourcePattern" />
+            <classpath refid="classpath" />
+        </javac>
+        <echo message="compile finished: ${timestamp}" />
+    </target>
+
+    <target name="javadoc" depends="init">
+        <javadoc destdir="${javaDocsDir}"
+                 verbose="false"
+                 author="true"
+                 version="true"
+                 windowtitle="${title} JavaDoc"
+                 doctitle="${title}"
+                 bottom="Copyright (c) 2007-${year} North Concepts Inc. All Rights Reserved."
+                 useexternalfile="true">
+            <fileset dir="${javaSourceDir}">
+                <patternset refid="sourcePattern" />
+                <exclude name="com/northconcepts/datapipeline/internal/**/*.java" />
+            </fileset>
+            <classpath refid="classpath" />
+			<link href="https://docs.oracle.com/javase/8/docs/api/" />
+        </javadoc>
+        <echo message="javadoc finished: ${timestamp}" />
+    </target>
+
+    <target name="package" depends="compile, javadoc">
+        <jar destfile="${deployDir}/${baseArchiveName}-${version}.jar" 
+             excludes="${excludedFilesFromJar}"
+             update="false"
+             >
+
+            <zipfileset  dir="${classDir}">
+                <include name="**/*.class"/>
+            </zipfileset>
+
+            <zipfileset  dir=".">
+                <include name="CHANGELOG.txt"/>
+                <include name="License.pdf"/>
+            </zipfileset>
+        </jar>
+
+        <zip destfile="${deployDir}/${baseArchiveName}-${version}.zip" update="false">
+            
+            <zipfileset  dir="${deployDir}" >
+                <include name="${baseArchiveName}-${version}.jar"/>
+            </zipfileset>
+
+            <zipfileset dir="lib"  prefix="lib">
+                <include name="**/*.jar"/>
+                <exclude name="**/*.zip"/>
+                <exclude name="**/*-src.jar"/>
+            </zipfileset>
+
+            <zipfileset  dir="${javaDocsDir}" prefix="javadocs" />
+
+            <zipfileset  dir="${javaSourceDir}" prefix="src">
+                <patternset refid="sourcePattern" />
+            </zipfileset>
+
+            <zipfileset  dir="${javaExampleSourceDir}" prefix="example/src">
+                <patternset refid="examplesSourcePattern" />
+                <include name="log4j.properties"/>
+            </zipfileset>
+
+            <zipfileset  dir="${exampleDataDir}" prefix="example/data">
+                <include name="**/*"/>
+                <exclude name="output/**/*"/>
+            </zipfileset>
+
+            <zipfileset dir="redist"  prefix="redist" />
+
+			<zipfileset  dir=".">
+                <include name=".project"/>
+                <include name=".classpath"/>
+                <include name="CHANGELOG.txt"/>
+                <include name="License.pdf"/>
+            </zipfileset>
+        </zip>
+
+        <echo message="Package finished: ${timestamp}" />
+
+    </target>
+
+</project>
